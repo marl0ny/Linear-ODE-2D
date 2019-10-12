@@ -1,0 +1,13 @@
+# xmin, xmax, ymin, ymax of plot
+-10.0 
+10.0 
+-10.0 
+10.0
+# axes location in pixels with respect 
+# to the bottom left corner of the canvas.
+216
+-640
+491
+-365
+772 
+-86
