@@ -55,7 +55,7 @@ class LinearVectorField2D(BaseVectorField2D):
         self.interactive_line_coeffs = 0.0, 0.0
 
         try:
-            arr = np.loadtxt("../resources/linear_vector_field_constants.txt")
+            arr = np.loadtxt("./resources/linear_vector_field_constants.txt")
             arr = arr.T
             bounds = list(arr[0:4])
             self._axes_location = list(arr[4:10])
