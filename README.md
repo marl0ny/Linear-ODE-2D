@@ -1,5 +1,5 @@
 # Linear ODEs in 2D
-This program is an interactive plot of a two-dimensional homogeneous linear system.
+This program is an interactive plot of two coupled homogeneous linear differential equations.
 To use this program, you first need to have Python 3 with Tkinter, Matplotlib, and Numpy.
 You must then download or clone this repository and then run `linear_vector_field.py` through the command line.
 
