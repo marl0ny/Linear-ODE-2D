@@ -17,13 +17,13 @@ class BaseVectorField2D(Animation):
         Initializer for the BaseVectorField2D class.
         """
 
-        super().__init__(1)
+        super().__init__(True)
 
         # Attributes are defined in the methods.
+        # self.autoaddartists = True
         self.set_coords(*bounds)
         self.set_values()
         self.set_plotting_objects()
-        self.place_widgets()
         self.plot_vector_field(init_call=True)
 
     def f(self, xy, *t) -> None:
@@ -108,5 +108,7 @@ class BaseVectorField2D(Animation):
         """
         Update the animation
         """
+        # print("fps: %.1f" % (1/self.delta_t))
+        # print(self._plots)
         pass
         # self.plot_vector_field(init_call = False)

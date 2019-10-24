@@ -54,6 +54,8 @@ class Animation(AnimationConstants):
                 dpi=self.dots_per_inches)
         self.delta_t = 1.0/60.0
         self._t = perf_counter()
+        # TODO: Figure out a better way to do this!
+        self.backendiskivy = False
 
     def make_plots(self) -> None:
         """
@@ -107,8 +109,10 @@ class Animation(AnimationConstants):
         t = perf_counter()
         self.delta_t = t - self._t
         self._t = t
-        # print(self._plots)
-        return self._plots
+        if not self.backendiskivy:
+            return self._plots
+        else:
+            return []
 
     def animation_loop(self) -> None:
         """This method plays the animation. This must be called in order

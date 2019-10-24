@@ -2,15 +2,21 @@
 Linear homogeneous vector field in 2D.
 """
 import numpy as np
-import tkinter as tk
-from locate_mouse import locate_mouse
-from matplotlib.backends import backend_tkagg
 from vector_field import BaseVectorField2D
 
 
 class LinearVectorField2D(BaseVectorField2D):
     """
     Linear Vector Field 2D class.
+
+    Attributes:
+    m [np.ndarray]: ODE matrix
+    eivals [np.ndarray]: Eigenvalues of m
+    eigvects [np.ndarray]: Eigenvectors of m
+    lines [List[Line2D]]: List of Line2D
+    interactive_line [Line2D]: Line2D object that can be mutated
+                               from mouse input.
+    interactive_line_coeffs [Tuple[float, float]]: IC for interactive_line
 
     Reference:
     Strogatz, S. (2015). Linear Systems.
@@ -21,27 +27,7 @@ class LinearVectorField2D(BaseVectorField2D):
     def __init__(self) -> None:
         """
         Initializer.
-
-        Attributes:
-        window [tk.Tk]: Main tkinter gui window
-        canvas [backend_tkagg.FigureCanvasTkAgg]: Canvas to graph on
-        sliderslist [List[tk.Scale]]: List of tkinter sliders
-        quit_button [tk.Button]: The quit button
-        m [np.ndarray]: ODE matrix
-        eivals [np.ndarray]: Eigenvalues of m
-        eigvects [np.ndarray]: Eigenvectors of m
-        lines [List[Line2D]]: List of Line2D
-        interactive_line [Line2D]: Line2D object that can be mutated
-                                   from mouse input.
-        interactive_line_coeffs [Tuple[float, float]]:
-            IC for interactive_line
         """
-
-        # Tkinter GUI Objects
-        self.window = None
-        self.canvas = None
-        self.sliderslist = []
-        self.quit_button = None
 
         # Numpy objects for computations
         self.m = np.array([[0.0, 0.0], [0.0, 0.0]])
@@ -249,88 +235,13 @@ class LinearVectorField2D(BaseVectorField2D):
         w, v = np.linalg.eig(self.m)
         self.eigvals = w
         self.eigvects = v
-
-    def slider_update(self, event: tk.Event) -> None:
+        
+    def set_matrix_element(self, i: int, j: int, value: float) -> None:
         """
-        Respond to slider events from the slider widgets.
+        Set only a single matrix element of m.
+        Also compute its eigenvalues and eigenvectors.
         """
-
-        tmplist = []
-        for i in range(len(self.sliderslist)):
-            tmplist.append(self.sliderslist[i].get())
-
-        self.set_matrix(*tuple(tmplist))
-        self.plot_vector_field()
-
-    def mouse_listener(self, event: tk.Event) -> None:
-        """
-        Listen to mouse input on the canvas and then call further
-        functions in order to handle this.
-        """
-        x, y = locate_mouse(event, self.bounds, self._canvas_height,
-                            self._axes_location)
-        self.set_interactive_line(x, y)
-
-    def place_widgets(self) -> None:
-        """
-        Add tkinter gui widgets.
-        """
-
-        # Primary Tkinter GUI
-        self.window = tk.Tk()
-        self.window.title("Linear Vector Field in 2D")
-        self.window.configure(background="white")
-
-        # Canvas
-        # A short example of how to integrate a Matplotlib animation into a
-        # Tkinter GUI is given here:
-        # https://stackoverflow.com/a/21198403
-        # [Answer by HYRY: https://stackoverflow.com/users/772649/hyry]
-        # Link to question: https://stackoverflow.com/q/21197728
-        # [Question by user3208454:
-        # https://stackoverflow.com/users/3208454/user3208454]
-        self.canvas = backend_tkagg.FigureCanvasTkAgg(
-            self.figure,
-            master=self.window
-        )
-        maxrowspan = 15
-        self.canvas.get_tk_widget().grid(
-                row=0, column=0, rowspan=maxrowspan, columnspan=3)
-        self._canvas_height = self.canvas.get_tk_widget().winfo_height()
-        self.canvas.get_tk_widget().bind("<B1-Motion>", self.mouse_listener)
-
-        # Quit button
-        self.quit_button = tk.Button(
-                self.window, text='QUIT', command=self.quit)
-        self.quit_button.grid(row=maxrowspan - 1, column=4, pady=(10, 10))
-
-        # Sliders
-        rnge = 10.0
-        self.sliderslist = []
-        for i, char in enumerate(('a', 'b', 'c', 'd')):
-            self.sliderslist.append(tk.Scale(self.window,
-                                             label="change " + char + ":",
-                                             from_=-rnge, to=rnge,
-                                             resolution=0.01,
-                                             orient=tk.HORIZONTAL,
-                                             length=200,
-                                             command=self.slider_update))
-            self.sliderslist[i].grid(row=i + 1, column=4,
-                                     padx=(10, 10), pady=(0, 0))
-        self.sliderslist[0].set(-0.5)
-        self.sliderslist[1].set(-1.5)
-        self.sliderslist[2].set(1.5)
-        self.sliderslist[3].set(-0.5)
-
-    def quit(self, *event: tk.Event) -> None:
-        """
-        Quit the application.
-        """
-        self.window.quit()
-        self.window.destroy()
-
-
-if __name__ == "__main__":
-    v = LinearVectorField2D()
-    v.animation_loop()
-    tk.mainloop()
+        self.m[i][j] = value
+        w, v = np.linalg.eig(self.m)
+        self.eigvals = w
+        self.eigvects = v
