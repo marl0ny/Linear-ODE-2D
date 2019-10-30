@@ -64,7 +64,7 @@ class App(LinearVectorField2D):
         # Primary Tkinter GUI
         self.window = tk.Tk()
         self.window.title("Linear Vector Field in 2D")
-        self.window.configure(background="white")
+        self.window.configure()
 
         # Canvas
         # A short example of how to integrate a Matplotlib animation into a
@@ -106,6 +106,31 @@ class App(LinearVectorField2D):
         self.sliderslist[1].set(-1.5)
         self.sliderslist[2].set(1.5)
         self.sliderslist[3].set(-0.5)
+        
+        # Thanks to stackoverflow user rudivonstaden for
+        # giving a way to get the colour of the tkinter widgets:
+        # https://stackoverflow.com/questions/11340765/
+        # default-window-colour-tkinter-and-hex-colour-codes
+        #
+        #     https://stackoverflow.com/q/11340765
+        #     [Question by user user2063:
+        #      https://stackoverflow.com/users/982297/user2063]
+        #
+        #     https://stackoverflow.com/a/11342481
+        #     [Answer by user rudivonstaden:
+        #      https://stackoverflow.com/users/1453643/rudivonstaden]
+        #
+        colour = self.window.cget('bg')
+        if colour == 'SystemButtonFace':
+            colour = "#F0F0F0"
+        # Thanks to stackoverflow user user1764386 for
+        # giving a way to change the background colour of a plot.
+        #
+        #    https://stackoverflow.com/q/14088687
+        #    [Question by user user1764386:
+        #     https://stackoverflow.com/users/1764386/user1764386]
+        #
+        self.figure.patch.set_facecolor(colour)
 
     def quit(self, *event: tk.Event) -> None:
         """
