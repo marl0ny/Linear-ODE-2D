@@ -49,11 +49,18 @@ class App(LinearVectorField2D):
 
     def mouse_listener(self, event: tk.Event) -> None:
         """
-        Listen to mouse input on the canvas and then call further
-        functions in order to handle this.
+        Handle mouse input.
         """
-        x, y = locate_mouse(event, self.bounds, self._canvas_height,
-                            self._axes_location)
+        ax = self.figure.get_axes()[0]
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        pixel_xlim = [ax.bbox.xmin, ax.bbox.xmax]
+        pixel_ylim = [ax.bbox.ymin, ax.bbox.ymax]
+        height = self.canvas.get_tk_widget().winfo_height()
+        mx = (xlim[1] - xlim[0])/(pixel_xlim[1] - pixel_xlim[0])
+        my = (ylim[1] - ylim[0])/(pixel_ylim[1] - pixel_ylim[0])
+        x = (event.x - pixel_xlim[0])*mx + xlim[0]
+        y = (height - event.y - pixel_ylim[0])*my + ylim[0]
         self.set_interactive_line(x, y)
 
     def place_widgets(self) -> None:
@@ -106,7 +113,7 @@ class App(LinearVectorField2D):
         self.sliderslist[1].set(-1.5)
         self.sliderslist[2].set(1.5)
         self.sliderslist[3].set(-0.5)
-        
+
         # Thanks to stackoverflow user rudivonstaden for
         # giving a way to get the colour of the tkinter widgets:
         # https://stackoverflow.com/questions/11340765/
